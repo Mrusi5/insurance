@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Calculate Insurance Cost</title> 
+    <style> 
+            body { 
+                font-family: Arial, sans-serif; 
+                margin: 0; 
+                padding: 20px; }
+            h1 {
+                text-align: center;
+            }
+            
+            form {
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            
+            label, select {
+                display: block;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+            
+            input[type="number"],
+            select {
+                width: 100%;
+                padding: 5px;
+                font-size: 16px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+            }
+            
+            button[type="submit"] {
+                padding: 10px 20px;
+                font-size: 16px;
+                border-radius: 4px;
+                background-color: #4CAF50;
+                color: white;
+                cursor: pointer;
+                margin: 0 auto;
+                display: block;
+            }
+    
+            h2 {
+                text-align: center;
+            }
+        </style>
+        </head>
+<body>
+    <h1>Calculate Insurance Cost</h1>
+
+    <form id="insurance_form">
+        <label for="insurancerequestschema_declared_value">Declared Value:</label>
+        <input type="number" id="insurancerequestschema_declared_value" name="declared_value" min="0" step="0.01" required><br>
+
+        <label for="insurancerequestschema_cargo_type">Cargo Type:</label>
+        <select id="insurancerequestschema_cargo_type" name="cargo_type" required>
+        </select><br>
+
+        <label for="date">Insurance Date:</label>
+        <input type="date" id="date" name="date" required><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    <h2 id="insurance_cost">Total Insurance Cost: </h2>
+
+    <script>
+        document.getElementById("insurance_form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const insuranceDate = document.getElementById('date').value;
+            formData.append('date', insuranceDate);
+
+            const requestData = Object.fromEntries(formData);
+
+            fetch('/home', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                const insuranceCostElement = document.getElementById('insurance_cost');
+                insuranceCostElement.textContent = `Total Insurance Cost: ${result.insurance_cost}`;
+            });
+        });
+
+        // Загрузка данных из файла с тарифами
+        fetch('/tariffs.json')
+            .then(response => response.json())
+            .then(data => {
+                const cargoTypeSelect = document.getElementById('insurancerequestschema_cargo_type');
+        
+                // Получение последней даты
+                const lastDate = Object.keys(data).sort().pop();
+                const tariffs = data[lastDate];
+        
+                // Создание <option> элементов на основе последних изменений
+                tariffs.forEach(tariff => {
+                    const option = document.createElement('option');
+                    option.value = tariff.cargo_type;
+                    option.textContent = tariff.cargo_type;
+                    cargoTypeSelect.appendChild(option);
+                });
+            });
+    </script>
+</body>
+</html>

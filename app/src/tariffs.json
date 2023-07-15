@@ -1,0 +1,30 @@
+{
+    "2023-06-15": [
+        {
+            "cargo_type": "Glass",
+            "rate": 0.1
+        },
+        {
+            "cargo_type": "Other",
+            "rate": 0.2
+        },
+        {
+            "cargo_type": "Rock",
+            "rate": 0.3
+        }
+    ],
+    "2023-07-15": [
+        {
+            "cargo_type": "Glass",
+            "rate": 0.15
+        },
+        {
+            "cargo_type": "Other",
+            "rate": 0.25
+        },
+        {
+            "cargo_type": "Rock",
+            "rate": 0.35
+        }
+    ]
+}
